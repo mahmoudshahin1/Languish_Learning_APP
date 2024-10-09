@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:germany_app/componats/TunsItem.dart';
+import 'package:germany_app/screen/TunsComponat.dart';
 import 'package:germany_app/screen/home.dart';
+import 'package:germany_app/screen/test.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnBordingMode {
@@ -18,17 +20,18 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<OnBordingMode> onBording = [
     OnBordingMode(
-        image: "assets/images/R.png",
-        titel: "Learn With me ",
-        body: "Screen 1"),
+        image: "assets/images/d-cartoon-back-school-23-2151676608.png",
+        titel: "Welcome to Language Learning App – Germany Edition ",
+        body: "Master German with Fun and Interactive Lessons"),
     OnBordingMode(
-        image: "assets/images/OIP.jpeg",
-        titel: "Learn With your frind ",
-        body: "Screen 2"),
+        image: "assets/images/photo2.png",
+        titel: "How Language Learning App Works ",
+        body: "Step-by-Step Guide to Learning German"),
     OnBordingMode(
-        image: "assets/images/german-apps.jpg",
-        titel: "Learn germany ",
-        body: "Screen 3"),
+        image: "assets/images/photo3.png",
+        titel: "Interactive Features for Learning German ",
+        body:
+            " Boost Your Fluency with Lessons, Quizzes, and Pronunciation Practice"),
   ];
 
   var bordarController = PageController();
@@ -38,97 +41,147 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView.builder(
-                onPageChanged: (value) {
-                  if (value == onBording.length - 1) {
-                    setState(() {
-                      isLast = true;
-                    });
-                  } else {
-                    setState(() {
-                      isLast = false;
-                    });
-                  }
-                },
-                controller: bordarController,
-                physics: BouncingScrollPhysics(),
-                itemBuilder: (context, index) =>
-                    buldiBordingItem(onBording[index]),
-                itemCount: onBording.length,
-              ),
-            ),
-            Row(
-              children: [
-                SmoothPageIndicator(
-                  controller: bordarController,
-                  count: onBording.length,
-                  effect: const ExpandingDotsEffect(
-                      activeDotColor: Colors.blue,
-                      dotColor: Colors.grey,
-                      dotHeight: 5,
-                      dotWidth: 10,
-                      spacing: 5.0,
-                      expansionFactor: 4),
-                ),
-                const Spacer(),
-                FloatingActionButton(
-                  backgroundColor: Colors.blue,
-                  onPressed: () {
-                    if (isLast) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => Tunsitem()),
-                      );
-                    } else {
-                      bordarController.nextPage(
-                          duration: Duration(milliseconds: 700),
-                          curve: Curves.fastEaseInToSlowEaseOut);
-                    }
-                  },
-                  child: Icon(Icons.arrow_forward_ios),
-                )
-              ],
-            )
-          ],
+        body: Column(children: [
+      SizedBox(
+        width: width(context),
+        height: hight(context) * .8,
+        child: PageView.builder(
+          controller: bordarController,
+          onPageChanged: (int index) {
+            if (index == onBording.length - 1) {
+              print('last');
+              setState(() {
+                isLast = true;
+              });
+            } else {
+              setState(() {
+                isLast = false;
+              });
+            }
+          },
+          itemBuilder: (context, index) => OnBording(onBording[index]),
+          itemCount: onBording.length,
         ),
       ),
+      const SizedBox(
+        height: 10,
+      ),
+      somtheIndecator(),
+      Spacer(),
+      isLast
+          ? IsLast()
+          : Row(
+              children: [
+                Elvaeteditem(
+                  text: 'Skip',
+                  onpreesed: () {},
+                ),
+                Spacer(),
+                Elvaeteditem(
+                    text: 'Next',
+                    onpreesed: () {
+                      bordarController.nextPage(
+                          duration: Duration(milliseconds: 500),
+                          curve: Curves.decelerate);
+                    })
+              ],
+            ),
+    ]));
+  }
+
+  Row somtheIndecator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SmoothPageIndicator(
+          controller: bordarController,
+          count: onBording.length,
+          effect: ExpandingDotsEffect(
+              dotColor: Colors.grey,
+              activeDotColor: Colors.orange,
+              dotHeight: 10,
+              dotWidth: 20,
+              radius: 8,
+              spacing: 4),
+        ),
+      ],
     );
   }
 
-  Widget buldiBordingItem(OnBordingMode item) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image(
-            image: AssetImage(
-              (item.image),
-            ),
-            fit: BoxFit.fill,
+  Column OnBording(OnBordingMode model) {
+    return Column(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(14.0),
+          child: Image(
+              image: AssetImage(
+                model.image,
+              ),
+              width: 400,
+              height: 500,
+              fit: BoxFit.cover),
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(
+          textAlign: TextAlign.center,
+          model.titel,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
-          Spacer(
-            flex: 1,
-          ),
-          Text(
-            item.titel,
-            style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 60,
-          ),
-          Text(
-            item.body,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(
-            height: 30,
-          ),
-        ],
-      );
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Text(model.body,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            )),
+      ],
+    );
+  }
+
+  Row IsLast() {
+    return Row(
+      children: [
+        Elvaeteditem(
+          text: 'Register',
+          onpreesed: () {},
+        ),
+        const Spacer(),
+        Elvaeteditem(
+          text: 'Login',
+          onpreesed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Tunsitem()));
+          },
+        )
+      ],
+    );
+  }
+}
+
+class Elvaeteditem extends StatelessWidget {
+  const Elvaeteditem({
+    super.key,
+    this.onpreesed,
+    required this.text,
+  });
+  final dynamic onpreesed;
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.orange,
+        ),
+        onPressed: onpreesed,
+        child: Text(text));
+  }
 }
